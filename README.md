@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="img/QuorumTrust-logo.png" alt="QuorumTrust Logo" width="360">
+  <img src="img/QuorumTrust-logo.png" alt="QuorumTrust Logo" width="720">
 </p>
 
 <h1 align="center">QuorumTrust</h1>
