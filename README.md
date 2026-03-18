@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/crypto-FROST--Ed25519-1E88E5?style=flat-square&logo=letsencrypt" alt="FROST">
   <img src="https://img.shields.io/badge/network-Chaincraft-blue?style=flat-square&logo=ethereum" alt="Chaincraft">
   <img src="https://img.shields.io/badge/license-Apache--2.0-lightgrey?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/tests-40%20passing-brightgreen?style=flat-square" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-134%20passing-brightgreen?style=flat-square" alt="Tests">
 </p>
 
 ---
