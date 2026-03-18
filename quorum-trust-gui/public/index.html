@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuorumTrust</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <span class="header-title">QuorumTrust</span>
+      <span class="header-network" id="networkName">--</span>
+      <span class="header-node-name" id="nodeName"></span>
+    </div>
+    <div class="header-right">
+      <span class="header-stat">Members: <strong id="memberCount">-</strong></span>
+      <span class="header-stat">Proposals: <strong id="proposalCount">-</strong></span>
+      <span class="identity-badge" id="nodeDigest">...</span>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div style="text-align:center;padding:16px 16px 8px;">
+        <img src="/img/QuorumTrust-logo.png" alt="QuorumTrust" id="sidebarLogo" style="width:220px;height:auto;object-fit:contain;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;">
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-title">Navigation</div>
+        <div class="nav-item active" data-view="documents">
+          <span class="nav-icon">&#128196;</span> Active Document
+        </div>
+        <div class="nav-item" data-view="governance">
+          <span class="nav-icon">&#9878;</span> Governance
+          <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+        </div>
+        <div class="nav-item" data-view="members">
+          <span class="nav-icon">&#128101;</span> Members
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Files</div>
+        <div id="fileTree"></div>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      <!-- Documents View -->
+      <div id="view-documents" class="view-panel">
+        <div class="content-header">
+          <h1 class="content-title">Active Document</h1>
+          <button class="btn btn-primary" id="btnNewFile">+ New File</button>
+        </div>
+        <div id="documentContent">
+          <div class="empty-state">
+            <div class="empty-state-icon">&#128196;</div>
+            <div class="empty-state-text">Select a file from the sidebar</div>
+            <div class="empty-state-sub">or create a new shared document</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Governance View -->
+      <div id="view-governance" class="view-panel" style="display:none">
+        <div class="content-header">
+          <h1 class="content-title">Governance</h1>
+        </div>
+        <div class="tabs">
+          <div class="tab active" data-filter="all">All</div>
+          <div class="tab" data-filter="Pending">Pending</div>
+          <div class="tab" data-filter="Accepted">Accepted</div>
+          <div class="tab" data-filter="Rejected">Rejected</div>
+        </div>
+        <div id="proposalsList"></div>
+      </div>
+
+      <!-- Members View -->
+      <div id="view-members" class="view-panel" style="display:none">
+        <div class="content-header">
+          <h1 class="content-title">Members</h1>
+          <button class="btn btn-primary" id="btnProposeMember">+ Propose Member</button>
+          <button class="btn btn-danger" id="btnExpelMember">Expel Member</button>
+        </div>
+        <div class="card">
+          <div id="membersList"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modals -->
+  <div id="modalOverlay" class="modal-overlay" style="display:none">
+    <div class="modal" id="modalContent"></div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "quorum-trust-gui",
+  "version": "0.1.0",
+  "description": "QuorumTrust Web GUI - Collaborative Document Signing Interface",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.4",
+    "marked": "^11.1.0",
+    "dompurify": "^3.0.6",
+    "jsdom": "^23.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.1.0"
+  }
+}

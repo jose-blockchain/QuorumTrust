@@ -1,0 +1,3 @@
+[workspace]
+members = ["quorum-trust"]
+resolver = "2"
