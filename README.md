@@ -21,7 +21,7 @@
 
 ## Overview
 
-QuorumTrust is a Rust-based decentralized node system for secure collaborative editing and signing of Markdown documents across distributed networks. It uses **FROST Threshold Cryptography** (Ed25519-SHA512) and [**Chaincraft**](https://github.com/jose-blockchain/chaincraft-rust) for peer-to-peer coordination without central authority.
+QuorumTrust is a Rust-based decentralized node system for secure collaborative editing and signing of Markdown documents across distributed networks. It uses **FROST Threshold Cryptography** from [Crypto@Bern Thetacrypt project](https://github.com/cryptobern/thetacrypt) (Ed25519-SHA512) and [**Chaincraft**](https://github.com/jose-blockchain/chaincraft-rust) for peer-to-peer coordination without central authority.
 
 - **Threshold Signatures** — No single node can unilaterally sign documents
 - **Governance by Consensus** — Member additions/removals require >2/3 majority
