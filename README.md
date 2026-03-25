@@ -187,6 +187,10 @@ The e2e tests simulate 4-5 node networks with full governance workflows includin
 - **Ed25519-dalek** — Signature primitives
 - **Similar/Diffy** — Diff computation and patching
 
+## Contributing & Bug Bounty
+
+We welcome community contributions. See **[BOUNTY.md](BOUNTY.md)** for details on our Bug Bounty & Feature Request Program, including reward tiers and submission guidelines.
+
 ## License
 
 Apache License 2.0 — see [LICENSE](LICENSE).
