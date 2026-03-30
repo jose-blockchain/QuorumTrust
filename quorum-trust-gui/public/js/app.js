@@ -902,6 +902,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// --- Dark Mode ---
+const DARK_MODE_KEY = 'quorumtrust-theme';
+
+function getPreferredTheme() {
+  const stored = localStorage.getItem(DARK_MODE_KEY);
+  if (stored) return stored;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const btn = document.getElementById('darkModeToggle');
+  if (btn) {
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+    btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  }
+}
+
+function toggleDarkMode() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem(DARK_MODE_KEY, next);
+}
+
+// Apply saved or system preference on load
+applyTheme(getPreferredTheme());
+
+// Toggle button listener
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('darkModeToggle');
+  if (btn) {
+    btn.addEventListener('click', toggleDarkMode);
+  }
+});
+
 // --- Init ---
 async function init() {
   await loadStatus();
