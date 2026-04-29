@@ -74,6 +74,10 @@ pub enum GossipMessageType {
         threshold: u16,
         total: u16,
     },
+    /// Peer exchange: nodes share their known peer addresses
+    PeerExchange {
+        known_peers: Vec<PeerInfo>,
+    },
 }
 
 impl GossipMessageType {
@@ -91,6 +95,7 @@ impl GossipMessageType {
             Self::SigningCommitment { .. } => "SigningCommitment",
             Self::SigningShare { .. } => "SigningShare",
             Self::ThresholdSignatureResult { .. } => "ThresholdSignatureResult",
+            Self::PeerExchange { .. } => "PeerExchange",
         }
     }
 }
@@ -100,6 +105,19 @@ pub struct KeyShareEnvelope {
     pub recipient_digest: String,
     pub share_id: u16,
     pub encrypted_share: Vec<u8>,
+}
+
+/// Information about a known peer node
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PeerInfo {
+    /// IP address or hostname
+    pub address: String,
+    /// P2P port
+    pub port: u16,
+    /// Display name (optional)
+    pub name: Option<String>,
+    /// Last seen timestamp
+    pub last_seen: DateTime<Utc>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
