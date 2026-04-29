@@ -1,0 +1,72 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+repos:
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: Check Rust formatting
+        description: Ensure Rust code is formatted with rustfmt
+        entry: cargo fmt --all -- --check
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      - id: cargo-clippy
+        name: Lint with Clippy
+        description: Lint Rust code with Clippy
+        entry: cargo clippy --workspace -- -D warnings
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      - id: cargo-test
+        name: Run tests
+        description: Run Cargo tests
+        entry: cargo test --workspace
+        language: system
+        types: [rust]
+        pass_filenames: false
+        stages: [commit]
+
+      - id: cargo-audit
+        name: Audit dependencies
+        description: Audit Cargo dependencies for vulnerabilities
+        entry: cargo audit
+        language: system
+        pass_filenames: false
+        stages: [manual]
+
+      - id: secret-detection
+        name: Detect secrets
+        description: Check for accidentally committed secrets
+        entry: detect-secrets-hook
+        language: system
+        types: [text]
+        exclude: (Cargo.lock|target/)
+
+      - id: commit-msg-check
+        name: Validate commit message
+        description: Ensure commit message follows conventional commits
+        entry: commitlint -E HUSKY_GIT_PARAMS
+        language: system
+        stages: [commit-msg]
+        pass_filenames: false
+
+  - repo: https://github.com/detect-secrets/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: (Cargo.lock|target/|test/)
+
+# Additional checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+        args: ['--maxkb=500']
