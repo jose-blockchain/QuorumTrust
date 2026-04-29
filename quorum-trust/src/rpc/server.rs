@@ -3,7 +3,7 @@ use crate::network::QuorumNetwork;
 use sha2::Digest;
 use axum::extract::{Json, Path, Query, State};
 use axum::http::{HeaderMap, StatusCode};
-use axum::response::IntoResponse;
+use axum::response::{IntoResponse, Response};
 use axum::routing::{get, post};
 use axum::Router;
 use serde::{Deserialize, Serialize};
@@ -12,6 +12,20 @@ use std::sync::Arc;
 use tokio::sync::RwLock;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
+
+#[derive(Serialize)]
+struct ErrorResponse {
+    code: u16,
+    message: String,
+    details: Option<String>,
+}
+
+impl IntoResponse for ErrorResponse {
+    fn into_response(self) -> Response {
+        let status = StatusCode::from_u16(self.code).unwrap_or(StatusCode::INTERNAL_SERVER_ERROR);
+        (status, Json(self)).into_response()
+    }
+}
 
 type SharedNetwork = Arc<RwLock<QuorumNetwork>>;
 
