@@ -1,0 +1,17 @@
+# rustfmt configuration
+edition = "2021"
+
+# Formatting rules
+max_width = 100
+use_field_init_shorthand = true
+use_try_shorthand = true
+compress_match_arms = true
+compact_chains = true
+
+# Import grouping
+group_imports = "StdExternalCrate"
+imports_granularity = "Crate"
+
+# Spacing
+blank_lines_upper_bound = 1
+overflow_delimited_expr = true
