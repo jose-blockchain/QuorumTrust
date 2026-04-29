@@ -1,0 +1,46 @@
+# Clippy lint configuration
+[allow]
+# Allowed lints - too strict for initial development
+
+[warn]
+# Warning lints - good practices
+absolute_paths_not_starting_with_crate
+elidable_lifetime_names
+explicit_dyn_drop
+macro_use_extern_crate
+missing_docs_in_private_items
+nonstandard_style
+private_interfaces
+private_bounds
+redundant_lifetimes
+renamed_and_removed_lints
+single_use_lifetimes
+trivial_casts
+trivial_numeric_casts
+unaligned_references
+unnameable_test_items
+unused_extern_crates
+unused_import_braces
+unused_qualifications
+
+[deny]
+# Deny lints - must fix
+deprecated_anna
+deprecated_in_future
+duplicate_macro_attributes
+improper_ctypes
+late_bound_lifetime_arguments
+non_shorthand_field_patterns
+overlapping_patterns
+path_statements
+patterns_in_fns_without_body
+rust_2021_incompatible_closure_captures
+rust_2021_incompatible_or_patterns
+rust_2021_prefixes_incompatible_syntax
+rust_2021_prelude_collisions
+unsafe_code
+while_true
+
+[feature]
+# Feature-gated lints
+cfg_not_test = true
