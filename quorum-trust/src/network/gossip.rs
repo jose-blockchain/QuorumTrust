@@ -7,6 +7,7 @@ use crate::governance::membership::GovernanceState;
 use crate::governance::persistence;
 use crate::governance::voting::{ProposalStatus, ProposalType, Vote, VoteChoice};
 use crate::network::messages::{GossipMessage, GossipMessageType};
+use crate::network::peer_discovery::PeerDiscovery;
 use crate::network::quorum_object::QuorumTrustObject;
 use chaincraft::{ChaincraftNode, storage::MemoryStorage};
 use std::collections::HashSet;
@@ -21,6 +22,7 @@ pub struct QuorumNetwork {
     pub threshold_state: Arc<RwLock<ThresholdState>>,
     chaincraft_node: Arc<Mutex<Option<ChaincraftNode>>>,
     seen_messages: Arc<RwLock<HashSet<String>>>,
+    peer_discovery: Arc<PeerDiscovery>,
 }
 
 impl QuorumNetwork {
@@ -72,6 +74,9 @@ impl QuorumNetwork {
         let seen_messages = Arc::new(RwLock::new(HashSet::new()));
         let threshold_state = Arc::new(RwLock::new(ThresholdState::new()));
 
+        let peer_discovery = PeerDiscovery::new(config.data_dir.clone()).await
+            .map_err(|e| anyhow::anyhow!("PeerDiscovery init failed: {e}"))?;
+
         let (broadcast_tx, broadcast_rx) = mpsc::unbounded_channel();
 
         let quorum_obj = QuorumTrustObject::new(
@@ -109,6 +114,7 @@ impl QuorumNetwork {
                 threshold_state,
                 chaincraft_node: Arc::new(Mutex::new(Some(chaincraft_node))),
                 seen_messages,
+                peer_discovery: Arc::new(peer_discovery),
             },
             broadcast_rx,
         ))
@@ -147,6 +153,9 @@ impl QuorumNetwork {
         msg.sign(&frost);
         drop(frost);
         self.broadcast_message(&msg).await?;
+
+        // Broadcast our known peers so new nodes can discover us
+        self.broadcast_peer_exchange().await?;
 
         Ok(())
     }
@@ -236,6 +245,23 @@ impl QuorumNetwork {
         drop(frost);
         self.broadcast_message(&msg).await?;
         tracing::info!("Proposal broadcast: {} ({:?})", proposal_id, proposal_type);
+        Ok(())
+    }
+
+    /// Broadcast a PeerExchange message containing our known peers.
+    /// This allows new nodes to discover existing network members.
+    pub async fn broadcast_peer_exchange(&self) -> anyhow::Result<()> {
+        let frost = self.frost.read().await;
+        let digest = frost.member_digest();
+        drop(frost);
+
+        let exchange = self.peer_discovery.build_exchange_message(&digest, &self.config.network_name).await;
+        let mut signed_exchange = exchange;
+        let frost2 = self.frost.read().await;
+        signed_exchange.sign(&frost2);
+        drop(frost2);
+        self.broadcast_message(&signed_exchange).await?;
+        tracing::info!("Broadcasted PeerExchange with {} known peers", self.peer_discovery.get_peer_infos("127.0.0.1", self.config.node_port).await.len());
         Ok(())
     }
 
@@ -333,6 +359,23 @@ impl QuorumNetwork {
             | GossipMessageType::SigningShare { .. }
             | GossipMessageType::ThresholdSignatureResult { .. } => {
                 // Handled in QuorumTrustObject::add_message (quorum_object.rs)
+            }
+            GossipMessageType::PeerExchange { known_peers } => {
+                // Add discovered peers to our peer table
+                self.peer_discovery.merge_exchange(known_peers, "127.0.0.1", self.config.node_port).await;
+                tracing::info!("PeerExchange: merged {} peers from {}", known_peers.len(), &msg.sender_digest[..12]);
+
+                // Connect to any new peers we didn't know about
+                let our_peers = self.peer_discovery.get_peer_infos("127.0.0.1", self.config.node_port).await;
+                for peer in &our_peers {
+                    let node_guard = self.chaincraft_node.lock().await;
+                    if let Some(ref mut node) = *node_guard {
+                        let addr = format!("{}:{}", peer.address, peer.port);
+                        if let Err(e) = node.connect_to_peer(&addr).await {
+                            tracing::debug!("Could not connect to peer {}: {}", addr, e);
+                        }
+                    }
+                }
             }
         }
 
