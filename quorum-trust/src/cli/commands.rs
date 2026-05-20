@@ -11,6 +11,10 @@ pub struct Cli {
     /// Path to the configuration file
     #[arg(short, long, global = true, default_value = "quorum-trust.toml")]
     pub config: PathBuf,
+
+    /// Output in JSON format
+    #[arg(long, global = true, default_value = "false")]
+    pub json: bool,
 }
 
 #[derive(Subcommand)]
